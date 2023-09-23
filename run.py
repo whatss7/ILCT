@@ -50,6 +50,7 @@ def main():
 	    "-DPYRUN_DEBUG_MODE", "-Drunning_offline", "-Ddebug_offline",
 	    "-Wall -std=c++14 -o main.exe -I utils"
 	])
+	check_result = False
 	for i in args:
 		p = i[len(prefix):]
 		if p == "random" or p == "rand":
@@ -64,8 +65,12 @@ def main():
 			cc.removearg("-Drunning_offline")
 		elif p == "nodebug" or p == "nd":
 			cc.removearg("-Ddebug_offline")
-		elif p == "longcheck" or p == "longchk" or p == "lc":
+		elif p == "tofile" or p == "tf" or p == "longcheck" or p == "longchk" or p == "lc":
+			check_result = False
 			cc.addarg("-Dchecking_offline")
+		elif p == "check" or p == "chk" or p == "c":
+			check_result = True
+			cc.removearg("-Dchecking_offline")
 		else:
 			print("Unexpected argument: --pyrun-" + p, file = sys.stderr)
 			return
@@ -76,7 +81,35 @@ def main():
 		print("Compile failed.", file=sys.stderr)
 	else:
 		print("Compile success.", file=sys.stderr)
-		subprocess.Popen(".\\main.exe").wait()
+		if check_result:
+
+			# Get output
+			pitem = subprocess.Popen(".\\main.exe", stdout=subprocess.PIPE)
+			pitem.wait()
+			raw_output = pitem.stdout.read().decode("ascii")
+			print(raw_output, end="")
+			output = raw_output.split()
+
+			# Get answer
+			raw_answer = ""
+			with open("answer.txt", "r") as answer_file:
+				raw_answer = answer_file.read()
+			answer = raw_answer.split()
+
+			# Compare
+			correct = True
+			for i in range(min(len(output), len(answer))):
+				if answer[i] != output[i]:
+					print("Token %d differ: \"%s\", expected \"%s\""%(i + 1, output[i], answer[i]))
+					correct = False
+			if len(output) != len(answer):
+				print("Answer length differ: %d, expected %d"%(len(answer), len(output)))
+				correct = False
+			if correct:
+				print("The answer seems to be correct.")
+			
+		else:
+			subprocess.Popen(".\\main.exe").wait()
 
 
 if __name__ == "__main__":

@@ -14,12 +14,14 @@ Supported argument:
   - `--pyrun-hack`: Switch to hack mode. Input and output will be redirected. Execution time will be shown. `debugp()` and `debuge()` won't work. 
   - `--pyrun-hackgen`: Switch to hackgen mode. Output will be redirected to `in.txt`.
 
-- `--pyrun-random`: (Not recommended) Run `utils/randgen.exe` first. You could compile it from `randgen.cpp`.
+- `--pyrun-check`: Compare output to `answer.txt`. Not compatible with `--pyrun-tofile`.
+
+- `--pyrun-tofile`: Output will be redirected to `out.txt`. Not compatible with `--pyrun-check`.
 
 - `--pyrun-interactive`: Input will not be redirected.
 
 - `--pyrun-nodebug`: `debugp()` and `debuge()` won't work. 
 
-- `--pyrun-longcheck`: Output will be redirected to `out.txt`.
+- `--pyrun-random`: (Not recommended) Run `utils/randgen.exe` first. You could compile it from `randgen.cpp`.
 
 - All other arguments will be passed to compiler.
