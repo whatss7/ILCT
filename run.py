@@ -1,4 +1,5 @@
 from utils.cppctrl import cppcontroller
+from utils.pyctrl import pycontroller
 import sys
 
 def main():
@@ -9,16 +10,22 @@ def main():
 	args = []
 	inst = []
 	prefix = "--pyrun-"
-	lang = "C++"
+	lang = ""
+	sc = None
 	for i in sys.argv[1:]:
 		if i.startswith(prefix):
 			args.append(i)
 		else:
 			inst.append(i)
-	file = inst[0]
+	file: str = inst[0]
 	inst = inst[1:]
+	if file.endswith(".cpp") or file.endswith(".cc"):
+		lang = "C++"
+		sc = cppcontroller()
+	elif file.endswith(".py"):
+		lang = "Python"
+		sc = pycontroller()
 	
-	sc = cppcontroller()
 	for i in args:
 		p = i[len(prefix):]
 		if not sc.accept_arg(p):

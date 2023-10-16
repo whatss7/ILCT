@@ -1,11 +1,11 @@
-import utils.cmdctrl as cmdctrl
+import utils.misc as misc
 import sys, subprocess
 
 class cppcontroller:
 	def __init__(self):
-		self.cc = cmdctrl.cmdcontroller("g++ .\\utils\\debugfile.cpp", [
+		self.cc = misc.cmdcontroller("g++ .\\utils\\debugfile.cpp", [
 			"-DPYRUN_DEBUG_MODE", "-Drunning_offline", "-Ddebug_offline",
-			"-Wall -std=c++14 -o main.exe -I utils"
+			"-Wall -std=c++14 -o .\\utils\\main.exe -I utils"
 		])
 		self.check_result = False
 
@@ -24,7 +24,7 @@ class cppcontroller:
 			self.cc.removearg("-Drunning_offline")
 		elif arg == "nodebug" or arg == "nd":
 			self.cc.removearg("-Ddebug_offline")
-		elif arg == "tofile" or arg == "tf" or arg == "longcheck" or arg == "longchk" or arg == "lc":
+		elif arg == "tofile" or arg == "tf":
 			self.check_result = False
 			self.cc.addarg("-Dchecking_offline")
 		elif arg == "check" or arg == "chk" or arg == "c":
@@ -37,7 +37,7 @@ class cppcontroller:
 	def rewrite(self, file):
 		with open(".\\utils\\debugfile.cpp", "w") as debugfile:
 			with open(file, "r") as file:
-				debugfile.write('#include "debugutils.inc"\n\n')
+				debugfile.write('#include "debugutils_cpp.inc"\n\n')
 				for i in file.readlines():
 					if not self.isdebugdef(i):
 						debugfile.write(i)
@@ -51,29 +51,17 @@ class cppcontroller:
 			print("Compile success.", file=sys.stderr)
 			if self.check_result:
 				# Get output
-				pitem = subprocess.Popen(".\\main.exe", stdout=subprocess.PIPE)
+				pitem = subprocess.Popen(".\\utils\\main.exe", stdout=subprocess.PIPE)
 				pitem.wait()
-				raw_output = pitem.stdout.read().decode("ascii")
-				print(raw_output, end="")
-				output = raw_output.split()
+				output = pitem.stdout.read().decode("ascii")
+				print(output, end="")
 
 				# Get answer
-				raw_answer = ""
+				answer = ""
 				with open("answer.txt", "r") as answer_file:
-					raw_answer = answer_file.read()
-				answer = raw_answer.split()
+					answer = answer_file.read()
 
 				# Compare
-				correct = True
-				for i in range(min(len(output), len(answer))):
-					if answer[i] != output[i]:
-						print("Token %d differ: \"%s\", expected \"%s\""%(i + 1, output[i], answer[i]))
-						correct = False
-				if len(output) != len(answer):
-					print("Answer length differ: %d, expected %d"%(len(answer), len(output)))
-					correct = False
-				if correct:
-					print("The answer seems to be correct.")
-				
+				misc.compare(output, answer)
 			else:
 				subprocess.Popen(".\\main.exe").wait()
