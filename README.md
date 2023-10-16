@@ -8,9 +8,14 @@ Compile (and run) the file using `run.py`, you will get the following feature on
 - `debuge()` will execute function passed to it.
 - program reads input from `in.txt`.
 
+Supported language:
+
+- C++
+- Python
+
 Supported argument:
 
-- Mode switching. Switching mode will make all regular parameters invalid.
+- Mode switching *(C++ exclusive)*. Switching mode will make all regular parameters invalid.
   - `--pyrun-hack`: Switch to hack mode. Input and output will be redirected. Execution time will be shown. `debugp()` and `debuge()` won't work. 
   - `--pyrun-hackgen`: Switch to hackgen mode. Output will be redirected to `in.txt`.
 
