@@ -1,5 +1,6 @@
 from utils.cppctrl import cppcontroller
 from utils.pyctrl import pycontroller
+from utils.cctrl import ccontroller
 import sys
 
 def main():
@@ -25,6 +26,12 @@ def main():
 	elif file.endswith(".py"):
 		lang = "Python"
 		sc = pycontroller()
+	elif file.endswith(".c"):
+		lang = "C"
+		sc = ccontroller()
+	else:
+		print("Cannot identify language extension %s" % file[file.find('.'):])
+		return
 	
 	for i in args:
 		p = i[len(prefix):]

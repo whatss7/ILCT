@@ -15,11 +15,13 @@ class pycontroller:
 				s.startswith("debuge = lambda _: None"))
 
 	def accept_arg(self, arg):
-		if arg == "hack":
-			self.mode = "hack"
-		elif arg == "hackgen" or arg == "hg":
-			self.mode = "hackgen"
-		elif arg == "interactive" or arg == "int":
+		# if arg == "hack":
+		# 	self.mode = "hack"
+		# 	return True
+		# elif arg == "hackgen" or arg == "hg":
+		# 	self.mode = "hackgen"
+		# 	return True
+		if arg == "interactive" or arg == "int":
 			self.redirect_input = False
 		elif arg == "nodebug" or arg == "nd":
 			self.will_rewrite = False

@@ -1,26 +1,27 @@
 import utils.misc as misc
 import sys, subprocess
 
-class cppcontroller:
+class ccontroller:
 	def __init__(self):
-		self.cc = misc.cmdcontroller("g++ .\\utils\\debugfile.cpp", [
+		self.cc = misc.cmdcontroller("gcc .\\utils\\debugfile.c", [
 			"-DPYRUN_DEBUG_MODE", "-Drunning_offline", "-Ddebug_offline",
-			"-Wall -std=c++14 -o .\\utils\\main.exe -I utils"
+			"-Wall -std=c11 -o .\\utils\\main.exe -I utils"
 		])
 		self.check_result = False
 
 	def isdebugdef(self, s: str):
-		return (s.startswith("void debugp(const char *fmt, ...)") or
-				s.startswith("void debuge(function<void()> action)"))
+		return (s.startswith("void debugp(const char *fmt, ...)"))
 
 	def accept_arg(self, arg):
-		if arg == "hack":
-			self.cc.removearg("-DPYRUN_DEBUG_MODE")
-			self.cc.addarg("-DPYRUN_HACK_MODE")
-		elif arg == "hackgen" or arg == "hg":
-			self.cc.removearg("-DPYRUN_DEBUG_MODE")
-			self.cc.addarg("-DPYRUN_HACKGEN_MODE")
-		elif arg == "interactive" or arg == "int":
+		# if arg == "hack":
+		# 	self.cc.removearg("-DPYRUN_DEBUG_MODE")
+		# 	self.cc.addarg("-DPYRUN_HACK_MODE")
+		# 	return True
+		# elif arg == "hackgen" or arg == "hg":
+		# 	self.cc.removearg("-DPYRUN_DEBUG_MODE")
+		# 	self.cc.addarg("-DPYRUN_HACKGEN_MODE")
+		# 	return True
+		if arg == "interactive" or arg == "int":
 			self.cc.removearg("-Drunning_offline")
 		elif arg == "nodebug" or arg == "nd":
 			self.cc.removearg("-Ddebug_offline")
@@ -35,9 +36,9 @@ class cppcontroller:
 		return True
 	
 	def rewrite(self, file):
-		with open(".\\utils\\debugfile.cpp", "w") as debugfile:
+		with open(".\\utils\\debugfile.c", "w") as debugfile:
 			with open(file, "r") as file:
-				debugfile.write('#include "debugutils_cpp.inc"\n\n')
+				debugfile.write('#include "debugutils_c.inc"\n')
 				for i in file.readlines():
 					if not self.isdebugdef(i):
 						debugfile.write(i)

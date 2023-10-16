@@ -1,7 +1,6 @@
 debugp = lambda _: None
 debuge = lambda _: None
 ########################
-
 def main():
 	cn = int(input())
 	for _ in range(cn):
